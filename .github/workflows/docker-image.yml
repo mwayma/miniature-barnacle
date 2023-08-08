@@ -16,6 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      packages: delete
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -41,6 +42,7 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }} , ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
         labels: ${{ steps.meta.outputs.labels }}
+   
   modify-manifest:
     needs: build-and-push-image
     runs-on: ubuntu-latest
@@ -66,3 +68,15 @@ jobs:
           GIT_USERNAME: ${{ github.actor }}
           GIT_PASSWORD: ${{ secrets.cross_repo }}
           RUN_NUMBER: ${{ github.run_number }}
+
+  delete-old-images:
+    needs: modify-manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: snok/container-retention-policy@v2
+        with:
+          image-names: ${{ env.IMAGE_NAME }}*
+          cut-off: One day ago UTC
+          keep-at-least: 2
+          account-type: personal
+          token: ${{ secrets.GITHUB_TOKEN }}
