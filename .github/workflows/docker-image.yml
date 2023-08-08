@@ -39,9 +39,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: |
-          ${{ steps.meta.outputs.tags }}
-          mwayma/miniature-barnacle:${{ github.run_number }}
+        tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
   modify-manifest:
     needs: build-and-push-image
