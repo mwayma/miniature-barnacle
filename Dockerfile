@@ -8,6 +8,7 @@ WORKDIR /usr/src
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+#junk
 # install system dependencies
 RUN apt-get update && apt-get install -y \
     netcat \
