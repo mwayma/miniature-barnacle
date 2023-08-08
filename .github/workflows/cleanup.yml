@@ -1,0 +1,22 @@
+name: Docker Image Cleanup
+
+on:
+  schedule:
+    - cron: '30 8 * * *'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+    delete-old-images:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: snok/container-retention-policy@v2
+          with:
+            image-names: miniature-barnacle*
+            cut-off: 1 day ago UTC-6
+            keep-at-least: 2
+            account-type: personal
+            token: ${{ secrets.cross_repo }}
+            timestamp-to-use: created_at

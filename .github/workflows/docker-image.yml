@@ -11,17 +11,59 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-  delete-old-images:
-    #needs: modify-manifest
+    - name: Log into the container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }} , ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+        labels: ${{ steps.meta.outputs.labels }}
+   
+  modify-manifest:
+    needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
-      - uses: snok/container-retention-policy@v2
+      - uses: actions/checkout@v3
+        name: changing the deployment of git repo
         with:
-          image-names: miniature-barnacle*
-          cut-off: 10 minutes ago UTC-6
-          keep-at-least: 2
-          account-type: personal
+          repository: 'mwayma/miniature-barnacle-argo'
           token: ${{ secrets.cross_repo }}
-          timestamp-to-use: created_at
+      - name: modify the image
+        run: |
+          git config user.email waymack91xj@live.com
+          git config user.name mwayma
+          pwd
+          cat argo/manifest.yml
+          pwd
+          sed -i "s+mwayma/miniature-barnacle.*+mwayma/miniature-barnacle:$RUN_NUMBER+g" argo/manifest.yml
+          cat argo/manifest.yml
+          git add .
+          git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
+          git push origin main
+        env:
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_PASSWORD: ${{ secrets.cross_repo }}
+          RUN_NUMBER: ${{ github.run_number }}
