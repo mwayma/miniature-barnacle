@@ -75,7 +75,7 @@ jobs:
       - uses: snok/container-retention-policy@v2
         with:
           image-names: ${{ env.IMAGE_NAME }}*
-          cut-off: One hour ago UTC
+          cut-off: 10 minues ago UTC
           keep-at-least: 2
           account-type: personal
           token: ${{ secrets.cross_repo }}
