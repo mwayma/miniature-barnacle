@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Welcome to My Homepage{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+</head>
+<body>
+    <div class="loading-bar-container">
+        <div class="loading-bar"></div>
+    </div>
+    <div class="navbar">
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            <div class="menu-icon"></div>
+        </div>
+        <div class="menu-links" id="menuLinks">
+            <ul>
+                {% for item in menu_items %}
+                <li><a href="{{ item.url }}">{{ item.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menuLinks = document.getElementById("menuLinks");
+            menuLinks.style.display = menuLinks.style.display === "block" ? "none" : "block";
+        }
+
+        function showMenuOnResize() {
+            var menuLinks = document.getElementById("menuLinks");
+            if (window.innerWidth > 768) {
+                menuLinks.style.display = "block";
+            } else {
+                menuLinks.style.display = "none";
+            }
+        }
+
+        window.onload = showMenuOnResize;
+        window.onresize = showMenuOnResize;
+
+        // Hide the loading bar after page load
+        window.addEventListener("load", function() {
+            var loadingBarContainer = document.querySelector(".loading-bar-container");
+            loadingBarContainer.style.opacity = 0;
+        });
+    </script>
+</body>
+</html>
