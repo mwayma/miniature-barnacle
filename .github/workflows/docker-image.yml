@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: snok/container-retention-policy@v2
         with:
-          image-names: ${{ env.IMAGE_NAME }}*
+          image-names: miniature-barnacle*
           cut-off: 10 minutes ago UTC-6
           keep-at-least: 2
           account-type: personal
