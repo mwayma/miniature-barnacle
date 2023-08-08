@@ -49,7 +49,7 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: 'mwayma/miniature-barnacle-argo'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.cross_repo }}
       - name: modify the image
         run: |
           git config user.email waymack91xj@live.com
@@ -57,12 +57,12 @@ jobs:
           pwd
           cat argo/manifest.yml
           pwd
-          sed -i "s+mwayma/miniature-barnacle.*+mwayma/miniature-barnacle:app-$RUN_NUMBER+g" argo/manifest.yml
+          sed -i "s+mwayma/miniature-barnacle.*+mwayma/miniature-barnacle:$RUN_NUMBER+g" argo/manifest.yml
           cat argo/manifest.yml
           git add .
           git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
           git push origin main
         env:
           GIT_USERNAME: ${{ github.actor }}
-          GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GIT_PASSWORD: ${{ secrets.cross_repo }}
           RUN_NUMBER: ${{ github.run_number }}
