@@ -16,7 +16,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      packages: delete
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -79,4 +78,4 @@ jobs:
           cut-off: One day ago UTC
           keep-at-least: 2
           account-type: personal
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.cross_repo }}
