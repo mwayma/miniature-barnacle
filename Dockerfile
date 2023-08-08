@@ -20,7 +20,6 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . .
-RUN rm -rf argo
 RUN sed -i 's/\r$//g' /usr/src/entrypoint.sh
 RUN chmod +x /usr/src/entrypoint.sh
 
