@@ -51,7 +51,7 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: 'mwayma/miniature-barnacle-argo'
-          token: ${{ secrets.GIT_PASSWORD }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: modify the image
         run: |
           git config user.email waymack91xj@live.com
