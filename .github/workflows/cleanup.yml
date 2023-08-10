@@ -2,7 +2,7 @@ name: Docker Image Cleanup
 
 on:
   schedule:
-    - cron: '30 8 * * *'
+    - cron: '0 0 1 * *'
 
 jobs:
     delete-old-images:
