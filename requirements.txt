@@ -1,3 +1,4 @@
 Django==4.2.4
 psycopg2-binary==2.9.6
 django-allauth
+django-tailwind
