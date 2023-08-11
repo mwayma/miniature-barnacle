@@ -42,7 +42,18 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {},
+        extend: {
+            keyframes: {
+                loading: {
+                    to: {
+                        width: '100%',
+                    },
+                },
+            },
+            animation: {
+                loading: 'loading 3s infinite',
+            },
+        },
     },
     plugins: [
         /**
