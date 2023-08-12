@@ -28,6 +28,7 @@ DEBUG = bool(os.environ.get("DEBUG", default=1))
 
 ALLOWED_HOSTS = ['*']
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -163,5 +164,6 @@ SOCIALACCOUNT_PROVIDERS = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
 
 TAILWIND_APP_NAME = 'theme'
