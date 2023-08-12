@@ -15,17 +15,18 @@
 	</head>
 
 	<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-		<div id="loadingBar" class="bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 h-2 w-full transition-opacity z-50 top-0 left-0">
+		<div id="loadingBar" class="bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 h-2 w-full transition-opacity z-50 top-0 left-16">
 			<div class="w-0 h-full bg-cyan-400 animate-loading"></div>
 		</div>
-		<div class="fixed max-md:bottom-0 md:top-0 md:left-0 md:h-screen md:w-16 max-md:w-screen max-md:h-16 m-0 flex md:flex-col bg-primary text-gray-100 shadow-lg">
-			<i><img class="md:bottom-0 left-2 md:fixed max-md:relative max-md:flex md:items-left max-md:justify-left md:items-center md:justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></i>
+		<div class="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-primary text-gray-100 shadow-lg">
+			<i><img class="items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></i>
             {% for item in menu_items %}
-			<i onclick="location.href='{{ item.url }}'" class="relative flex max-md:items-left max-md:justify-left md:items-center md:justify-center h-12 w-12 mt-2 mb-2 max-md:mx-4 md:mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer {{ item.icon }}" ></i>
+			<i onclick="location.href='{{ item.url }}'" class="relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer {{ item.icon }}" ></i>
 			{% endfor %}
         </div>
-		<p>Welcome {{ user.first_name }} {{ user.last_name }}!
-		{% block content %}{% endblock %}
+		<div class="ml-16">
+			{% block content %}{% endblock %}
+		</div>
 	</body>
 	<script>
 		// Hide the loading bar after page load
