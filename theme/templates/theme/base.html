@@ -8,24 +8,33 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-		<script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
-    	<script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
+		<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    	<link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 		{% tailwind_css %}
+		<!--
+		<script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+    	<script src="{% static 'fontawesomefree/js/solid.js' %}"></script> -->
 	</head>
 
-	<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-		<div id="loadingBar" class="bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 h-2 w-full transition-opacity z-50 top-0 left-16">
-			<div class="w-0 h-full bg-cyan-400 animate-loading"></div>
-		</div>
-		<div class="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-primary text-gray-100 shadow-lg">
-			<i><img class="items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></i>
-            {% for item in menu_items %}
-			<i onclick="location.href='{{ item.url }}'" class="relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto shadow-lg bg-gray-800 text-green-500 hover:bg-green-600 hover:text-white rounded-3xl hover:rounded-xl transition-all duration-300 ease-linear cursor-pointer {{ item.icon }}" ></i>
-			{% endfor %}
-        </div>
-		<div class="ml-16">
-			{% block content %}{% endblock %}
+	<body class="bg-primary leading-normal tracking-normal">
+		<div class="bg-gray-50 dark:bg-gray-800">
+			<div id="loadingBar" class="bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 h-2 w-full transition-opacity z-50 top-0 left-16">
+				<div class="w-0 h-full bg-cyan-400 animate-loading"></div>
+			</div>
+			<div class="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-primary text-gray-100 shadow-lg">
+				<div class="sidebar-icon">
+					<i><img class="sidebar-icon" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></i>
+				</div>
+				{% for item in menu_items %}
+				<div class="sidebar-icon group">
+					<i onclick="location.href='{{ item.url }}'" class="{{ item.icon }} fa-2xl"></i>
+					<span class="sidebar-tooltip group-hover:scale-100">{{ item.name }}</span>
+				</div>			
+				{% endfor %}
+			</div>
+			<div class="ml-16">
+				{% block content %}{% endblock %}
+			</div>
 		</div>
 	</body>
 	<script>
