@@ -1,0 +1,47 @@
+{% extends 'theme/base.html' %}
+
+{% block title %}
+{% if is_editing %}Edit Firmware{% else %}Upload Firmware{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-semibold mb-4">
+        {% if is_editing %}Edit Firmware{% else %}Upload Firmware{% endif %}
+    </h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-4">
+            {{ form.device.label_tag }}
+            {{ form.device }}
+        </div>
+        <div class="mb-4">
+            {{ form.version.label_tag }}
+            {{ form.version }}
+        </div>
+        <div class="mb-4">
+            {{ form.firmware_file.label_tag }}
+            {{ form.firmware_file }}
+            <p class="text-gray-500 text-sm">
+                File name format: {{ device.name }}-{{ form.branch_id.value }}-{{ form.version.value }}.bin
+            </p>
+        </div>
+        <div class="mb-4">
+            {{ form.branch.label_tag }}
+            {{ form.branch }}
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {% if is_editing %}Save Changes{% else %}Upload{% endif %}
+        </button>
+    </form>
+
+    {% if is_editing and firmware %}
+    <hr class="my-8 border-b-2 border-gray-200" />
+    <form method="post" action="{% url 'delete_firmware' firmware.id %}">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                onclick="return confirm('Are you sure you want to delete this firmware?')">Delete Firmware</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

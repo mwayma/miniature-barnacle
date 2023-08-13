@@ -1,0 +1,23 @@
+<!-- edit_device.html -->
+{% extends 'theme/base.html' %}
+
+{% block title %}
+Edit Device Model
+{% endblock %}
+
+{% block content %}
+<h1>Edit Device Model</h1>
+<!-- Device model form ... -->
+
+<!-- Display firmware data -->
+{% for branch, firmwares in firmware_data.items %}
+    <h2>{{ branch }} Firmwares</h2>
+    <ul>
+        {% for firmware in firmwares %}
+            <li>{{ firmware.version }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+<!-- Upload firmware form ... -->
+{% endblock %}

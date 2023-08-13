@@ -17,13 +17,13 @@
 	</head>
 
 	<body class="bg-primary leading-normal tracking-normal">
-		<div class="bg-gray-50 dark:bg-gray-800">
+		<div class="bg-gray-50 dark:bg-gray-800 h-screen">
 			<div id="loadingBar" class="bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 h-2 w-full transition-opacity z-50 top-0 left-16">
 				<div class="w-0 h-full bg-cyan-400 animate-loading"></div>
 			</div>
 			<div class="fixed top-0 left-0 h-screen w-16 m-0 flex flex-col bg-primary text-gray-100 shadow-lg">
 				<div class="sidebar-icon">
-					<i><img class="sidebar-icon" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></i>
+					<a href="{% url 'account_logout' %}"><img class="sidebar-icon" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" /></a>
 				</div>
 				{% for item in menu_items %}
 				<div class="sidebar-icon group">
