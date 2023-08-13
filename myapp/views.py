@@ -1,10 +1,11 @@
 import os
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import FirmwareUploadForm, DeviceModelForm
+from .forms import FirmwareUploadForm, DeviceModelForm, FirmwareEditForm
 from .models import Firmware, DeviceModel, FirmwareBranch
 from django.urls import reverse
 from django.conf import settings
+from django.http import JsonResponse
 
 # Create your views here.
 def homepage(request):
@@ -34,10 +35,18 @@ def device_detail(request, device_id):
             firmware_by_branch[fw.branch] = []
         firmware_by_branch[fw.branch].append(fw)
 
+    if request.method == 'POST':
+        form = DeviceModelForm(request.POST, instance=device)
+        if form.is_valid():
+            form.save()
+            return redirect('device_detail', device_id=device_id)
+    else:
+        form = DeviceModelForm(instance=device)
+
     context = {
         'device': device,
         'firmware_by_branch': firmware_by_branch,
-        'form': DeviceModelForm(instance=device),
+        'form': form,
     }
 
     return render(request, 'myapp/device_detail.html', context)
@@ -98,25 +107,46 @@ def firmware(request):
     context = {'firmware_items': firmware_items}
     return render(request, 'myapp/firmware.html', context)
 
-def upload_firmware(request, firmware_id=None):
-    is_editing = firmware_id is not None
-
-    if is_editing:
-        firmware = get_object_or_404(Firmware, pk=firmware_id)
-        form = FirmwareUploadForm(request.POST or None, request.FILES or None, instance=firmware)
-    else:
-        form = FirmwareUploadForm(request.POST or None, request.FILES or None)
+def upload_firmware(request, device_id):
+    device = get_object_or_404(DeviceModel, pk=device_id)
 
     if request.method == 'POST':
+        form = FirmwareUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            firmware = form.save()  # Let Django handle the file overwrite
+            firmware = form.save(commit=False)
+            firmware.device = device
+            firmware.save()
+            redirect_url = reverse('device_detail', kwargs={'device_id': device_id})
+            return redirect(redirect_url)
+    else:
+        form = FirmwareUploadForm(initial={'device': device})
+
+    context = {'form': form}
+    return render(request, 'myapp/upload_firmware.html', context)
+
+
+def edit_firmware(request, firmware_id):
+    firmware = get_object_or_404(Firmware, pk=firmware_id)
+    device = firmware.device  # Get the device associated with the firmware
+    branches = FirmwareBranch.objects.filter(device=device)  # Get branches for the device
+
+    if request.method == 'POST':
+        form = FirmwareEditForm(request.POST or None, request.FILES or None, instance=firmware)
+        if form.is_valid():
+            form.save()
             device_id = firmware.device_id
             redirect_url = reverse('device_detail', kwargs={'device_id': device_id})
             return redirect(redirect_url)
+    else:
+        form = FirmwareEditForm(instance=firmware)
 
-    context = {'form': form, 'is_editing': is_editing}
+    # Set the queryset for the branch field to show only branches for the device
+    form.fields['branch'].queryset = branches
 
-    return render(request, 'myapp/upload_firmware.html', context)
+    context = {'form': form, 'is_editing': True, 'device': device, 'firmware': firmware}
+
+    return render(request, 'myapp/edit_firmware.html', context)
+
 
 def delete_firmware(request, firmware_id):
     firmware = get_object_or_404(Firmware, pk=firmware_id)
@@ -126,3 +156,22 @@ def delete_firmware(request, firmware_id):
         redirect_url = reverse('device_detail', kwargs={'device_id': device_id})
         return redirect(redirect_url)
     return redirect('upload_firmware', firmware_id=firmware_id)  # Redirect back to the edit page if not a POST request
+
+def firmware_info(request, device_name, branch_id):
+    try:
+        device = DeviceModel.objects.get(name=device_name)
+        branch = FirmwareBranch.objects.get(id=branch_id, device=device)
+        latest_firmware = Firmware.objects.filter(device=device, branch=branch).order_by('-version').first()
+
+        if latest_firmware:
+            firmware_info = {
+                "version": latest_firmware.version,
+                "firmware_link": request.build_absolute_uri(latest_firmware.firmware_file.url),
+                "branch": branch.id,
+                "model": device.name,
+            }
+            return JsonResponse(firmware_info)
+        else:
+            return JsonResponse({"error": "No firmware available for the specified branch and device."}, status=404)
+    except (DeviceModel.DoesNotExist, FirmwareBranch.DoesNotExist):
+        return JsonResponse({"error": "Device or branch not found."}, status=404)
