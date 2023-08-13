@@ -14,6 +14,6 @@ urlpatterns = [
     path('delete-firmware/<int:firmware_id>/', views.delete_firmware, name='delete_firmware'),
     path('delete-device/<int:device_id>/', views.delete_device, name='delete_device'),
     path('delete-branch/<int:branch_id>/', views.delete_branch, name='delete_branch'),
-    path('<str:device_name>/<int:branch_id>/', views.firmware_info, name='firmware_info'),    
+    path('download/<str:device_name>/<int:branch_id>/', views.firmware_info, name='firmware_info'),    
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
