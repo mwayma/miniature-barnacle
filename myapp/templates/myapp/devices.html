@@ -13,7 +13,7 @@
                         <a href="{% url 'create_device' %}">Add Device Model</a>
                     </button> 
                 </div>   
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {% for device in devices %}    
                     <div class="max-w-sm rounded-md overflow-hidden shadow-lg px-6 py-4 font-bold text-xl mb-2 bg-gray-50 hover:cursor-pointer hover:shadow-2xl hover:bg-gray-100" onclick="location.href='{% url 'device_detail' device.pk %}'">
                         <div class="px-6 py-4">
